@@ -1,0 +1,29 @@
+[project]
+name = "frontend"
+version = "0.1.0"
+description = "frontend for DORA"
+authors = [
+    {name = "GalReg",email = "rrgalieva@edu.hse.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "3.9.13"
+streamlit = "^1.29.0"
+requests = "^2.31.0"
+pydantic = "^2.5.3"
+
+[tool.poetry]
+name = "dora-frontend"
+version = "0.1.0"
+description = "Frontend for DORA project"
+authors = ["Galieva Regina <rrgalieva@edu.hse.ru>"]
+package-mode = false
