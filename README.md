@@ -1,1 +1,2 @@
-# DORA project, MLOps course
+# DORA project
+MLOps course
