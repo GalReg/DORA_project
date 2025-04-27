@@ -1,0 +1,7 @@
+[tool.black]  
+line-length = 88  
+target-version = ["py39"]  # Для Python 3.9  
+
+[tool.isort]  
+profile = "black"  # Совместимость с Black  
+line_length = 88
