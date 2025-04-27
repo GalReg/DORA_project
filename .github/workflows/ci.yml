@@ -1,0 +1,122 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  DOCKER_IMAGE_BACKEND: ghcr.io/${{ github.repository_owner }}/dora-backend
+  DOCKER_IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/dora-frontend
+  DOCKER_TAG: ${{ github.sha }}
+
+jobs:
+  lint:
+    name: Lint and Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          
+      - name: Install linters
+        run: pip install black==23.12.0 flake8==6.1.0 isort==5.13.2
+
+      - name: Run Black
+        run: black --check backend/ frontend/
+        
+      - name: Run Flake8
+        run: flake8 backend/ frontend/
+        
+      - name: Run isort
+        run: isort --check-only backend/ frontend/
+
+  build-docker:
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE_BACKEND }}:latest
+            ${{ env.DOCKER_IMAGE_BACKEND }}:${{ env.DOCKER_TAG }}
+            
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE_FRONTEND }}:latest
+            ${{ env.DOCKER_IMAGE_FRONTEND }}:${{ env.DOCKER_TAG }}
+
+  build-python-package:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          
+      - name: Install Poetry
+        run: pip install poetry==1.7.0
+          
+      - name: Build backend package
+        working-directory: ./backend
+        run: |
+          poetry build
+          mkdir -p ../artifacts
+          mv dist/* ../artifacts/
+          
+      - uses: actions/upload-artifact@v3
+        with:
+          name: python-packages
+          path: artifacts/*
+
+  deploy-docs:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          
+      - name: Install MkDocs
+        run: pip install mkdocs mkdocs-material
+          
+      - name: Build docs
+        run: |
+          mkdir -p public
+          echo "# DORA Project Documentation" > public/index.md
+          mkdocs build --site-dir public
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
