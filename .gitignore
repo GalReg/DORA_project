@@ -1,5 +1,3 @@
 __pycache__
 .dockerignore
-notebook.ipynb
 .env
-combined_info.csv
