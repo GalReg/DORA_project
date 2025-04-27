@@ -1,0 +1,36 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "GalReg",email = "rrgalieva@edu.hse.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "langchain (>=0.3.24,<0.4.0)",
+    "langchain-community (>=0.3.22,<0.4.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pandas = "^2.1.4"
+langchain = "^0.0.353"
+tiktoken = "^0.5.2"
+openai = "^1.6.1"
+faiss-cpu = "^1.7.4"
+fastapi = "^0.106.0"
+uvicorn = "^0.25.0"
+python-dotenv = "^1.0.0"
+
+[tool.poetry]
+name = "dora-backend"
+version = "0.1.0"
+description = "Backend for DORA project"
+authors = ["Galieva Regina <rrgalieva@edu.hse.ru>"]
+package-mode = false

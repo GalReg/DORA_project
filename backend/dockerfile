@@ -1,0 +1,26 @@
+# Используем официальный образ Python
+FROM python:3.9-slim
+
+# Устанавливаем системные зависимости
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc python3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Рабочая директория
+WORKDIR /backend
+
+# Копируем только файлы зависимостей сначала (для кэширования)
+COPY pyproject.toml poetry.lock ./
+
+# Устанавливаем Poetry и зависимости
+RUN pip install --upgrade pip && \
+    pip install poetry==1.7.0 && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi
+
+# Копируем остальные файлы
+COPY . .
+
+# Порт и команда для запуска
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
