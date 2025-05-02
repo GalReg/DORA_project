@@ -1,0 +1,5 @@
+outs:
+- md5: 648966a8afbfdb2803f6b670a333c506
+  size: 199353
+  hash: md5
+  path: gb_model_v1.pkl
