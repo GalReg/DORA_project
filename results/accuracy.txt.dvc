@@ -1,0 +1,4 @@
+outs:
+  - md5: 98a8b23af5f5e9d8b7a1b7c8e7d6f5e2
+    size: 16
+    path: accuracy.txt
