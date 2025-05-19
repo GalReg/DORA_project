@@ -40,6 +40,7 @@ MLOps course
 Установите зависимости из файла requirements.txt:
 ```bash
 pip install -r requirements.txt
+```
 
 ## ML Pipeline with Airflow
 Паплайн состоит из 3 этапов:
